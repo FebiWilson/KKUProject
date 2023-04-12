@@ -1,0 +1,256 @@
+To make this code work, you need to create a new React.js project and copy this code into the App.js file.
+
+Here are the steps you can follow to create a new React.js project:
+
+    Open your terminal or command prompt and navigate to the directory where you want to create your project.
+
+    Run the following command to create a new React.js project:
+
+    lua
+
+npx create-react-app my-app
+
+Replace "my-app" with the name of your project.
+
+Once the project is created, navigate to the project directory by running the following command:
+
+bash
+
+cd my-app
+
+Replace "my-app" with the name of your project.
+
+Open the App.js file located in the src directory of your project.
+
+Replace the existing code in the App.js file with the code you provided:
+
+jsx
+
+import React, { useState } from "react";
+
+function App() {
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+
+  const handleSwitchChange = () => {
+    setIsSwitchOn(!isSwitchOn);
+  };
+
+  return (
+    <div>
+      <h1>Switch Example</h1>
+      <label>
+        <input
+          type="checkbox"
+          checked={isSwitchOn}
+          onChange={handleSwitchChange}
+        />
+        <span>{isSwitchOn ? "ON" : "OFF"}</span>
+      </label>
+    </div>
+  );
+}
+
+export default App;
+
+Save the App.js file.
+
+Start the development server by running the following command in your terminal:
+
+sql
+
+    npm start
+
+    Open your web browser and navigate to http://localhost:3000 to see the running React.js application.
+
+You should now see a switch button with the text "Switch Example" and a label that displays either "ON" or "OFF" depending on the state of the switch. You can click the switch button to toggle the state and see the label change between "ON" and "OFF".
+
+
+
+
+
+pragma solidity ^0.8.0;
+
+contract PrivateMessage {
+    mapping(address => string) private messages;
+
+    function sendMsg(string memory message, address recipient) public {
+        require(msg.sender == tx.origin, "Only external accounts can send messages");
+        require(recipient != address(0), "Invalid recipient address");
+        require(msg.sender != recipient, "Sender and recipient cannot be the same");
+
+        messages[recipient] = message;
+    }
+
+    function getMsg() public view returns (string memory) {
+        return messages[msg.sender];
+    }
+}
+
+
+
+
+
+
+
+To connect the smart contract and the React app, you'll need to use a library like web3.js to interact with the blockchain from the frontend. Here's an example of how you could modify the existing code to send a message to the blockchain using the sendMsg function in the PrivateMessage contract:
+
+javascript
+
+import React, { useState } from "react";
+import Web3 from "web3";
+import PrivateMessageContract from "./contracts/PrivateMessage.json";
+
+function App() {
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [message, setMessage] = useState("");
+  const [recipient, setRecipient] = useState("");
+
+  const handleSwitchChange = () => {
+    setIsSwitchOn(!isSwitchOn);
+  };
+
+  const handleRecipientChange = (event) => {
+    setRecipient(event.target.value);
+  };
+
+  const handleMessageChange = (event) => {
+    setMessage(event.target.value);
+  };
+
+  const handleSendMsg = async () => {
+    // Initialize Web3 with the user's current provider (e.g. MetaMask)
+    const web3 = new Web3(window.ethereum);
+
+    // Get the network ID and the contract address from the JSON file
+    const networkId = await web3.eth.net.getId();
+    const contractAddress = PrivateMessageContract.networks[networkId].address;
+
+    // Load the contract instance
+    const contract = new web3.eth.Contract(
+      PrivateMessageContract.abi,
+      contractAddress
+    );
+
+    // Send the message to the blockchain
+    await contract.methods.sendMsg(message, recipient).send({ from: window.ethereum.selectedAddress });
+
+    // Clear the form inputs
+    setMessage("");
+    setRecipient("");
+  };
+
+  return (
+    <div>
+      <h1>Private Message Example</h1>
+      <label>
+        Recipient:
+        <input type="text" value={recipient} onChange={handleRecipientChange} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <input type="text" value={message} onChange={handleMessageChange} />
+      </label>
+      <br />
+      <button onClick={handleSendMsg}>Send Message</button>
+      <hr />
+      <h1>Switch Example</h1>
+      <label>
+        <input
+          type="checkbox"
+          checked={isSwitchOn}
+          onChange={handleSwitchChange}
+        />
+        <span>{isSwitchOn ? "ON" : "OFF"}</span>
+      </label>
+    </div>
+  );
+}
+
+export default App;
+
+This code includes a few new components. First, it imports the Web3 library and the PrivateMessage contract JSON file. Then, it defines three new state variables: message and recipient to hold the user's input, and web3 to hold the initialized Web3 instance.
+
+The handleRecipientChange and handleMessageChange functions update the recipient and message state variables based on the user's input.
+
+The handleSendMsg function initializes the Web3 instance using the user's current provider, retrieves the network ID and contract address from the JSON file, loads the contract instance, and sends the message to the blockchain using the sendMsg function in the contract. It also clears the form inputs after sending the message.
+
+Finally, the form includes two new input fields for the recipient and message, and a button to send the message to the blockchain. The switch component is still included, but it's not currently connected to the smart contract.
+
+
+
+
+import React, { useState } from "react";
+import Web3 from "web3";
+import PrivateMessageContract from "./contracts/PrivateMessage.json";
+
+function App() {
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [message, setMessage] = useState("");
+  const [recipient, setRecipient] = useState("");
+
+  const handleSwitchChange = () => {
+    setIsSwitchOn(!isSwitchOn);
+  };
+
+  const handleRecipientChange = (event) => {
+    setRecipient(event.target.value);
+  };
+
+  const handleMessageChange = (event) => {
+    setMessage(event.target.value);
+  };
+
+  const handleSendMsg = async () => {
+    // Initialize Web3 with the user's current provider (e.g. MetaMask)
+    const web3 = new Web3(window.ethereum);
+
+    // Get the network ID and the contract address from the JSON file
+    const networkId = await web3.eth.net.getId();
+    const contractAddress = PrivateMessageContract.networks[networkId].address;
+
+    // Load the contract instance
+    const contract = new web3.eth.Contract(
+      PrivateMessageContract.abi,
+      contractAddress
+    );
+
+    // Send the message to the blockchain
+    await contract.methods.sendMsg(message, recipient).send({ from: window.ethereum.selectedAddress });
+
+    // Clear the form inputs
+    setMessage("");
+    setRecipient("");
+  };
+
+  return (
+    <div>
+      <h1>Private Message Example</h1>
+      <label>
+        Recipient:
+        <input type="text" value={recipient} onChange={handleRecipientChange} />
+      </label>
+      <br />
+      <label>
+        Message:
+        <input type="text" value={message} onChange={handleMessageChange} />
+      </label>
+      <br />
+      <button onClick={handleSendMsg}>Send Message</button>
+      <hr />
+      <h1>Switch Example</h1>
+      <label>
+        <input
+          type="checkbox"
+          checked={isSwitchOn}
+          onChange={handleSwitchChange}
+        />
+        <span>{isSwitchOn ? "ON" : "OFF"}</span>
+      </label>
+    </div>
+  );
+}
+
+export default App;
+
+
